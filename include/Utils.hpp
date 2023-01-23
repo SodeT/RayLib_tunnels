@@ -5,10 +5,34 @@
 #include <iostream>
 
 #define pi 3.14159
-#define log(x) std::cout << x << "\n";
+
+const int Width = 640;
+const int Height = 340;
+const int Mid = Height / 2;
+const int Scale = 5;
 
 float RadToDeg(float rad);
-float GetAngle(Vector2 from, Vector2 to);
 float DegToRad(float deg);
+float GetAngle(Vector2 from, Vector2 to);
+float GetDistance(Vector2 from, Vector2 to);
+
+struct Line
+{
+    Vector2 From;
+    Vector2 To;
+};
+
+struct MappedCorner
+{
+    float XOffset;
+    float Distance;
+};
+
+struct Corner
+{
+    Vector2 Position;
+    float Direction;
+    float Distance;
+};
 
 #endif

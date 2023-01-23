@@ -1,22 +1,21 @@
 #include <Block.hpp>
 #include <raylib.h>
+#include <iostream>
+#include <Block.hpp>
 
 Block::Block(float x, float z) 
 {
 
-        /* #region cube corners */
+        corners[0].Position.x = x * Scale;
+        corners[0].Position.y = z * Scale;
 
-        Positions[0].x = x;
-        Positions[0].y = z;
+        corners[1].Position.x = x * Scale + width * Scale;
+        corners[1].Position.y = z * Scale;
 
-        Positions[1].x = x + width;
-        Positions[1].y = z;
+        corners[2].Position.x = x * Scale;
+        corners[2].Position.y = z * Scale + width * Scale;
 
-        Positions[2].x = x;
-        Positions[2].y = z + width;
+        corners[3].Position.x = x * Scale + width * Scale;
+        corners[3].Position.y = z * Scale + width * Scale;
 
-        Positions[3].x = x + width;
-        Positions[4].y = z + width;
-
-        /* #endregion */
 }
