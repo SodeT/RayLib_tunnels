@@ -13,19 +13,10 @@ Color fg = {255, 255, 255, 255};
 int main() 
 {
     InitWindow(Width, Height, "title");
-/*
-    int world[8][8] = { {1, 1, 1, 1, 1, 1, 1, 1},
-                        {1, 0, 0, 0, 0, 0, 0, 1},
-                        {1, 0, 0, 0, 0, 0, 0, 1},
-                        {1, 0, 0, 0, 0, 0, 0, 1},
-                        {1, 0, 0, 0, 0, 0, 0, 1},
-                        {1, 0, 0, 0, 0, 0, 0, 1},
-                        {1, 0, 0, 0, 0, 0, 0, 1},
-                        {1, 1, 1, 1, 1, 1, 1, 1}};
-*/
-    int world[8][8] = { {1, 0, 1, 0, 1, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
+
+    int world[8][8] = { {1, 0, 0, 0, 1, 0, 0, 0},
+                        {0, 0, 1, 0, 0, 0, 0, 0},
+                        {1, 0, 0, 0, 1, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0, 0},
@@ -46,7 +37,7 @@ int main()
 
     BasicCam cam(3, 3, 70);
 
-    while (!WindowShouldClose()) 
+    while (!WindowShouldClose())
     {
 
         cam.GetCorners(blocks);
@@ -59,23 +50,16 @@ int main()
             Line line = linebuffer[i];
             DrawLine(line.From.x, line.From.y, line.To.x, line.To.y, fg);
         }
+        cam.HandleInput();
 
-        std::cout << cam.Direction << "\n";
-        cam.Direction += 1;
-        if (cam.Direction > 180)
-        {
-            cam.Direction -= 360;
-        }
-        //cam.Position.x += 0.01;
-        //cam.Position.x -= 1;
-        cam.Direction = (int)cam.Direction % 360;
-
-
+        std::cout << cam.Position.x << ", " << cam.Position.y << ": " << cam.Direction << "\n";
 
         usleep((16.666 - GetFrameTime()) * 1000 * 1); // cap fps to 60
                                     //             ^  this is some slowmo
+        DrawLine(HMid, 0, HMid, Height, RED);
         BeginDrawing();
         ClearBackground(bg);
         EndDrawing();
-    }
+
+    } 
 }

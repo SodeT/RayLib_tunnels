@@ -8,7 +8,8 @@
 
 const int Width = 640;
 const int Height = 340;
-const int Mid = Height / 2;
+const int HMid = Width / 2;
+const int VMid = Height / 2;
 const int Scale = 5;
 
 float RadToDeg(float rad);

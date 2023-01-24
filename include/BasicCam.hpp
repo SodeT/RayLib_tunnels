@@ -11,11 +11,13 @@ class BasicCam
     std::vector<MappedCorner> _mappedCorners;
     std::vector<Line> _linebuffer;
     float _fovPixels;
+    int _depthEffect = 1000; // lower value => increase shrinking at distance
+    float _speed = 0.4;
 
 public:
     Vector2 Position;
     float Fov;
-    float Direction = 0;
+    float Direction = 180;
 
     std::vector<Line> GetLinebuffer();
 
@@ -23,6 +25,7 @@ public:
     void GetCorners(std::vector<Block>& blocks);
     void MapToScreen(std::vector<Block>& blocks);
     void GenerateLinebuffer();
+    void HandleInput();
 };
 
 #endif

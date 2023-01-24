@@ -1,5 +1,7 @@
 #include <Utils.hpp>
 #include <raylib.h>
+#include <stdlib.h>
+#include <iostream>
 #include <cmath>
 
 float RadToDeg(float rad)
@@ -14,10 +16,10 @@ float DegToRad(float deg)
 
 float GetAngle(Vector2 from, Vector2 to)
 {
-    float xDiff = from.x - to.x;
-    float zDiff = from.y - to.y;
+    float xDiff = to.x - from.x;
+    float zDiff = to.y - from.y;
 
-    float radAngle = std::atan(zDiff/ xDiff);
+    float radAngle = std::atan2(zDiff, xDiff);
     float degAngle = RadToDeg(radAngle);
 
     return degAngle;
