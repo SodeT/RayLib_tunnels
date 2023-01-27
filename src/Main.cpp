@@ -35,7 +35,7 @@ int main()
         }
     }
 
-    BasicCam cam(3, 3, 70);
+    BasicCam cam(3, 3, 90);
 
     while (!WindowShouldClose())
     {
@@ -52,11 +52,10 @@ int main()
         }
         cam.HandleInput();
 
-        std::cout << cam.Position.x << ", " << cam.Position.y << ": " << cam.Direction << "\n";
-
         usleep((16.666 - GetFrameTime()) * 1000 * 1); // cap fps to 60
                                     //             ^  this is some slowmo
-        DrawLine(HMid, 0, HMid, Height, RED);
+        DrawLine(HMid, 0, HMid, Height, RED); // debug line
+
         BeginDrawing();
         ClearBackground(bg);
         EndDrawing();

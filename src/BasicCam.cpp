@@ -59,50 +59,54 @@ void BasicCam::GenerateLinebuffer()
     _linebuffer.clear();
     for (size_t i = 0; i < _mappedCorners.size(); i++)
     {
-        float height = 1000 / _mappedCorners[i].Distance;
+        float height = _depthEffect / _mappedCorners[i].Distance;
         Line line;
         line.From = {_mappedCorners[i].XOffset, VMid - height};
         line.To = {_mappedCorners[i].XOffset, VMid + height};
         _linebuffer.push_back(line);
     }
 
+    return;
+}
+
+void BasicCam::OccludeCorners()
+{
 
     return;
 }
 
+
+
 void BasicCam::HandleInput()
 {
-
     if (IsKeyDown(KEY_UP))
     {
-        Position.y -= _speed;
+        Position.x += -cos(DegToRad(Direction)) * _speed;
+        Position.y += sin(DegToRad(Direction)) * _speed;
     }
     else if (IsKeyDown(KEY_DOWN))
     {
-        Position.y += _speed;
-
+        Position.x -= -cos(DegToRad(Direction)) * _speed;
+        Position.y -= sin(DegToRad(Direction)) * _speed;
     }
-    
+
     if (IsKeyDown(KEY_LEFT))
     {
-        Position.x -= _speed;
+        Direction += _rotationSpeed;
     }
     else if (IsKeyDown(KEY_RIGHT))
     {
-        Position.x += _speed;
-    }
-
-    if (IsKeyDown(KEY_A))
-    {
-        Direction -= 1;
-    }
-    else if (IsKeyDown(KEY_D))
-    {
-        Direction += 1;
+        Direction -= _rotationSpeed;
     }
 
     if (Direction > 360)
+    {
         Direction -= 360;
+    }
+    else if (Direction < 0)
+    {
+        Direction += 360;
+    }
 
     return;
 }

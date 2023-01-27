@@ -2,7 +2,7 @@
 PROGRAM = a.exe
 CXX = g++
 
-CFLAGS = -I include/ -Llib -lraylib -lraylibdll -lopengl32 -lgdi32 -lwinmm -lws2_32
+CFLAGS = -I include/ -Llib -lraylib -lraylibdll -lopengl32 -lgdi32 -lwinmm -lws2_32 -static
 CFLAGS += -ggdb -Wall -Wextra -Wpedantic
 CFLAGS += -std=c++17 
 
