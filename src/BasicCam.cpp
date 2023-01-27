@@ -5,7 +5,7 @@
 #include <cmath>
 
 BasicCam::BasicCam(float x, float z, float Fov) 
-    :Position({x * Scale, z * Scale}), Fov(Fov) 
+    : Position({x * Scale, z * Scale}), Fov(Fov) 
 {
     _fovPixels = Width / Fov;
 }
@@ -79,16 +79,23 @@ void BasicCam::OccludeCorners()
 
 void BasicCam::HandleInput()
 {
+    _velocity = {0, 0};
+
     if (IsKeyDown(KEY_UP))
     {
-        Position.x += -cos(DegToRad(Direction)) * _speed;
-        Position.y += sin(DegToRad(Direction)) * _speed;
+        _velocity.x = -cos(DegToRad(Direction)) * _speed;
+        _velocity.y = sin(DegToRad(Direction)) * _speed;
     }
     else if (IsKeyDown(KEY_DOWN))
     {
-        Position.x -= -cos(DegToRad(Direction)) * _speed;
-        Position.y -= sin(DegToRad(Direction)) * _speed;
+        _velocity.x = -cos(DegToRad(Direction)) * -_speed;
+        _velocity.y = sin(DegToRad(Direction)) * -_speed;
     }
+
+    
+
+    Position.x += _velocity.x;
+    Position.y += _velocity.y;
 
     if (IsKeyDown(KEY_LEFT))
     {

@@ -42,6 +42,6 @@ struct Packet
     char damage : 6;
     float x;
     float y;
-}
+};
 
 #endif

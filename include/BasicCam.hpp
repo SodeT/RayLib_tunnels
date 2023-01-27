@@ -14,6 +14,7 @@ class BasicCam
     int _depthEffect = 700; // lower value => increase shrinking at distance
     float _speed = 0.4;
     float _rotationSpeed = 2;
+    Vector2 _velocity;
 
 public:
     Vector2 Position;
