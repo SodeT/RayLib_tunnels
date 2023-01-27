@@ -6,9 +6,10 @@
 
 class Block 
 {
-    
+
 public:
-    Corner corners[4];
+    Corner Corners[4];
+    MappedCorner MappedCorners[4]; 
     Block(float x, float z);
 };
 

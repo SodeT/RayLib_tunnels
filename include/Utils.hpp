@@ -11,6 +11,18 @@ const int Height = 340;
 const int HMid = Width / 2;
 const int VMid = Height / 2;
 const int Scale = 10;
+const int WorldSize = 8;
+const int World[WorldSize][WorldSize] = 
+{   
+    {1, 0, 0, 1, 0, 0, 0, 0},
+    {1, 1, 0, 0, 0, 0, 0, 0},
+    {1, 1, 0, 0, 0, 0, 0, 0},
+    {1, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0}
+};
 
 float RadToDeg(float rad);
 float DegToRad(float deg);

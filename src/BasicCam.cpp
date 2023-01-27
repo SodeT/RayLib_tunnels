@@ -21,14 +21,14 @@ void BasicCam::GetCorners(std::vector<Block>& blocks)
     {
         for (size_t j = 0; j < 4; j++)
         {
-            Vector2 cornerPos = blocks[i].corners[j].Position;
+            Vector2 cornerPos = blocks[i].Corners[j].Position;
             float cornerAngle = GetAngle(cornerPos, Position);
             float relativeAngle = cornerAngle + Direction;
 
-            blocks[i].corners[j].Direction = relativeAngle;
+            blocks[i].Corners[j].Direction = relativeAngle;
 
             float distance = GetDistance(cornerPos, Position);
-            blocks[i].corners[j].Distance = distance;
+            blocks[i].Corners[j].Distance = distance;
         }
     }
     return;
@@ -36,34 +36,36 @@ void BasicCam::GetCorners(std::vector<Block>& blocks)
 
 void BasicCam::MapToScreen(std::vector<Block>& blocks)
 {
-    _mappedCorners.clear();
     for (size_t i = 0; i < blocks.size(); i++)
     {
         for (size_t j = 0; j < 4; j++)
         {
-            MappedCorner corner;
-            corner.Distance = blocks[i].corners[j].Distance;
-            float dir = blocks[i].corners[j].Direction;
+            MappedCorner mCorner;
+            mCorner.Distance = blocks[i].Corners[j].Distance;
+            float dir = blocks[i].Corners[j].Direction;
             if (dir > 180)
                 dir -= 360;
-            corner.XOffset = HMid + dir * _fovPixels;
+            mCorner.XOffset = HMid + dir * _fovPixels;
 
-            _mappedCorners.push_back(corner);
+            blocks[i].MappedCorners[j] = mCorner;
         }
     }
     return;
 }
 
-void BasicCam::GenerateLinebuffer()
+void BasicCam::GenerateLinebuffer(std::vector<Block>& blocks)
 {
     _linebuffer.clear();
-    for (size_t i = 0; i < _mappedCorners.size(); i++)
+    for (size_t i = 0; i < blocks.size(); i++)
     {
-        float height = _depthEffect / _mappedCorners[i].Distance;
-        Line line;
-        line.From = {_mappedCorners[i].XOffset, VMid - height};
-        line.To = {_mappedCorners[i].XOffset, VMid + height};
-        _linebuffer.push_back(line);
+        for (int j = 0; j < 4; j++)
+        {
+            float height = _depthEffect / blocks[i].MappedCorners[j].Distance;
+            Line line;
+            line.From = {blocks[i].MappedCorners[j].XOffset, VMid - height};
+            line.To = {blocks[i].MappedCorners[j].XOffset, VMid + height};
+            _linebuffer.push_back(line);
+        }
     }
 
     return;
@@ -75,11 +77,8 @@ void BasicCam::OccludeCorners()
     return;
 }
 
-
-
 void BasicCam::HandleInput()
 {
-    _velocity = {0, 0};
 
     if (IsKeyDown(KEY_UP))
     {
@@ -91,12 +90,42 @@ void BasicCam::HandleInput()
         _velocity.x = -cos(DegToRad(Direction)) * -_speed;
         _velocity.y = sin(DegToRad(Direction)) * -_speed;
     }
+    else
+    {
+        _velocity.x *= _friction;
+        _velocity.y *= _friction;
 
-    
+        if (abs(_velocity.x) < 0.001)
+            _velocity.x = 0;
+        if (abs(_velocity.y) < 0.001)
+            _velocity.y = 0;
+    }
 
-    Position.x += _velocity.x;
-    Position.y += _velocity.y;
+    Vector2 tempPos = Position;
+    tempPos.x += _velocity.x;
+    tempPos.y += _velocity.y;
 
+    int gridX = (int)tempPos.x / Scale;
+    int gridY = (int)tempPos.y / Scale;
+
+    // Collision detection in world map
+    if (gridX >= 0 && gridX < WorldSize && gridY >= 0 && gridY < WorldSize)
+    {
+        if (World[gridY][gridX] != 1)
+        {
+            Position = tempPos;
+        }
+        else
+        {
+            _velocity = {0, 0};
+        }
+    }
+    else 
+    {
+        Position = tempPos;   
+    }
+
+    // Rotation
     if (IsKeyDown(KEY_LEFT))
     {
         Direction += _rotationSpeed;
