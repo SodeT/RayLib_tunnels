@@ -1,8 +1,11 @@
-#include <Utils.hpp>
 #include <raylib.h>
 #include <stdlib.h>
 #include <iostream>
 #include <cmath>
+
+#include <vector> 
+#include <Utils.hpp>
+#include <Block.hpp>
 
 float RadToDeg(float rad)
 {
@@ -27,9 +30,27 @@ float GetAngle(Vector2 from, Vector2 to)
 
 float GetDistance(Vector2 from, Vector2 to)
 {
-    float xDiff = from.x - to.x;
-    float zDiff = from.y - to.y; 
+    Vector2 diff;
+    diff.x = from.x - to.x;
+    diff.y = from.y - to.y; 
 
-    float c2 = xDiff * xDiff + zDiff * zDiff;
+    float c2 = pow(diff.x, 2) + pow(diff.y, 2);
     return std::sqrt(c2);
+}
+
+void SelectionSort(std::vector<Block>& blocks)
+{
+    for (size_t i = 0; i < blocks.size(); i++)
+    {
+        Block block = blocks[i];
+        for (size_t j = i; j < blocks.size() - i; j++)
+        {
+            if (blocks[j].Distance < block.Distance)
+            {
+                blocks[i] = blocks[j];
+                blocks[j] = block;
+            }
+        }
+    }
+    return;
 }

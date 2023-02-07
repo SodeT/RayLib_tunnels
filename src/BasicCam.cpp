@@ -1,8 +1,10 @@
 #include <raylib.h>
-#include <BasicCam.hpp>
 #include <stdlib.h>
-#include <Utils.hpp>
 #include <cmath>
+
+#include <BasicCam.hpp>
+#include <Utils.hpp>
+#include <Block.hpp>
 
 BasicCam::BasicCam(float x, float z, float Fov) 
     : Position({x * Scale, z * Scale}), Fov(Fov) 
@@ -10,15 +12,11 @@ BasicCam::BasicCam(float x, float z, float Fov)
     _fovPixels = Width / Fov;
 }
 
-std::vector<Line> BasicCam::GetLinebuffer()
-{
-    return _linebuffer;
-}
-
 void BasicCam::GetCorners(std::vector<Block>& blocks)
 {
     for (size_t i = 0; i < blocks.size(); i++)
     {
+        blocks[i].Distance = GetDistance(blocks[i].Middle, Position);
         for (size_t j = 0; j < 4; j++)
         {
             Vector2 cornerPos = blocks[i].Corners[j].Position;
@@ -45,35 +43,77 @@ void BasicCam::MapToScreen(std::vector<Block>& blocks)
             float dir = blocks[i].Corners[j].Direction;
             if (dir > 180)
                 dir -= 360;
+
             mCorner.XOffset = HMid + dir * _fovPixels;
 
             blocks[i].MappedCorners[j] = mCorner;
         }
+        blocks[i].SortCorners();
     }
     return;
 }
 
-void BasicCam::GenerateLinebuffer(std::vector<Block>& blocks)
+void BasicCam::OccludeCorners(std::vector<Block>& blocks)
 {
-    _linebuffer.clear();
+    for (size_t i = 0; i < blocks.size(); i++)
+    {
+        blocks[i].VisibleCorners[0] = &blocks[i].MappedCorners[0];
+        blocks[i].VisibleCorners[2] = &blocks[i].MappedCorners[3];
+        if (blocks[i].MappedCorners[1].Distance > blocks[i].MappedCorners[0].Distance)
+        {
+            blocks[i].VisibleCorners[1] = &blocks[i].MappedCorners[1];
+        }
+        else if (blocks[i].MappedCorners[2].Distance > blocks[i].MappedCorners[0].Distance)
+        {
+            blocks[i].VisibleCorners[1] = &blocks[i].MappedCorners[2];   
+        }
+    }
+
+    SelectionSort(blocks);
+
+    return;
+}
+
+void BasicCam::GenerateLineBuffer(std::vector<Block>& blocks)
+{
+    _lineBuffer.clear();
     for (size_t i = 0; i < blocks.size(); i++)
     {
         for (int j = 0; j < 4; j++)
         {
             float height = _depthEffect / blocks[i].MappedCorners[j].Distance;
+            float offset = blocks[i].MappedCorners[j].XOffset;
+            if (offset > HMid)
+            {
+                offset -= Width;
+            }
+
             Line line;
             line.From = {blocks[i].MappedCorners[j].XOffset, VMid - height};
             line.To = {blocks[i].MappedCorners[j].XOffset, VMid + height};
-            _linebuffer.push_back(line);
+            _lineBuffer.push_back(line);
         }
     }
 
     return;
 }
 
-void BasicCam::OccludeCorners()
-{
 
+void BasicCam::DrawCall()
+{
+    for (size_t i = 0; i < _lineBuffer.size(); i++)
+    {
+        Line line = _lineBuffer[i];
+        if ((line.From.x > Width && line.To.x < 0) || (line.From.x < 0 && line.To.x > Width))
+        {
+            continue;
+        }
+
+        DrawLine(line.From.x, 
+                line.From.y, 
+                line.To.x, 
+                line.To.y, fg);
+    }
     return;
 }
 
