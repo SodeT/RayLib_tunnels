@@ -4,18 +4,24 @@
 #include <Utils.hpp>
 #include <raylib.h>
 
+struct MappedCorner;
+struct Corner;
+
 class Block 
 {
 public:
     Vector2 Middle;
     float Distance;
     MappedCorner* VisibleCorners[3];
-    Corner Corners[4];
-    MappedCorner MappedCorners[4]; 
+    Corner* Corners;
+    MappedCorner* MappedCorners; 
     Block(float x, float z);
+    ~Block();
 
     void SortCorners();
+    void GetVisible();
 
 };
 
 #endif
+

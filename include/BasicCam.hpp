@@ -1,10 +1,9 @@
 #ifndef BASICCAM_HPP
 #define BASICCAM_HPP
 
-#include <vector>
-#include <raylib.h>
 #include <Block.hpp>
-#include <Utils.hpp>
+#include <raylib.h>
+#include <vector>
 
 class BasicCam 
 {
@@ -34,3 +33,4 @@ public:
 };
 
 #endif
+

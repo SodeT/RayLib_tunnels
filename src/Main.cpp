@@ -1,11 +1,13 @@
-#include <iostream>
-#include <vector>
-#include <raylib.h>
-#include <unistd.h>
-
-#include <Utils.hpp>
 #include <Block.hpp>
 #include <BasicCam.hpp>
+#include <Utils.hpp>
+
+#include <raylib.h>
+
+#include <vector>
+#include <iostream>
+
+#include <unistd.h>
 
 int main()
 {
@@ -47,5 +49,8 @@ int main()
         ClearBackground(bg);
         EndDrawing();
 
-    } 
+    }
+
+    return 0;
 }
+

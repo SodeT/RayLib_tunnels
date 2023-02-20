@@ -1,15 +1,20 @@
+#include <BasicCam.hpp>
+
+#include <Block.hpp>
+#include <Utils.hpp>
+
 #include <raylib.h>
-#include <stdlib.h>
+
+#include <vector>
 #include <cmath>
 
-#include <BasicCam.hpp>
-#include <Utils.hpp>
-#include <Block.hpp>
+#include <stdlib.h>
 
 BasicCam::BasicCam(float x, float z, float Fov) 
     : Position({x * Scale, z * Scale}), Fov(Fov) 
 {
     _fovPixels = Width / Fov;
+    return;
 }
 
 void BasicCam::GetCorners(std::vector<Block>& blocks)
@@ -55,21 +60,12 @@ void BasicCam::MapToScreen(std::vector<Block>& blocks)
 
 void BasicCam::OccludeCorners(std::vector<Block>& blocks)
 {
-    for (size_t i = 0; i < blocks.size(); i++)
-    {
-        blocks[i].VisibleCorners[0] = &blocks[i].MappedCorners[0];
-        blocks[i].VisibleCorners[2] = &blocks[i].MappedCorners[3];
-        if (blocks[i].MappedCorners[1].Distance > blocks[i].MappedCorners[0].Distance)
-        {
-            blocks[i].VisibleCorners[1] = &blocks[i].MappedCorners[1];
-        }
-        else if (blocks[i].MappedCorners[2].Distance > blocks[i].MappedCorners[0].Distance)
-        {
-            blocks[i].VisibleCorners[1] = &blocks[i].MappedCorners[2];   
-        }
-    }
-
     SelectionSort(blocks);
+
+    for (size_t i = 1; i < blocks.size(); i++)
+    {
+        blocks[i].GetVisible();
+    }
 
     return;
 }
@@ -79,25 +75,45 @@ void BasicCam::GenerateLineBuffer(std::vector<Block>& blocks)
     _lineBuffer.clear();
     for (size_t i = 0; i < blocks.size(); i++)
     {
-        for (int j = 0; j < 4; j++)
+        Line line;
+        int visibleCornerCount = 3;
+        for (size_t j = 0; j < 3; j++)
         {
-            float height = _depthEffect / blocks[i].MappedCorners[j].Distance;
-            float offset = blocks[i].MappedCorners[j].XOffset;
+            
+            if (blocks[i].VisibleCorners[j] ==  &blocks[i].MappedCorners[0] && j == 1)
+            {
+                visibleCornerCount -= 1;
+                continue;
+            }
+            
+            float height = _depthEffect / blocks[i].VisibleCorners[j]->Distance;
+            float offset = blocks[i].VisibleCorners[j]->XOffset;
             if (offset > HMid)
             {
                 offset -= Width;
             }
 
-            Line line;
-            line.From = {blocks[i].MappedCorners[j].XOffset, VMid - height};
-            line.To = {blocks[i].MappedCorners[j].XOffset, VMid + height};
+            line.From = {blocks[i].VisibleCorners[j]->XOffset, VMid - height};
+            line.To = {blocks[i].VisibleCorners[j]->XOffset, VMid + height};
+            _lineBuffer.push_back(line);
+        }
+
+        int index = _lineBuffer.size() - visibleCornerCount;
+        for (int j = 0; j < visibleCornerCount -1; j++)
+        {
+            line.From = _lineBuffer[index + j].From;
+            line.To = _lineBuffer[index + j +1].From;
+            _lineBuffer.push_back(line);
+            
+
+            line.From = _lineBuffer[index + j].To;
+            line.To = _lineBuffer[index + j +1].To;
             _lineBuffer.push_back(line);
         }
     }
 
     return;
 }
-
 
 void BasicCam::DrawCall()
 {
@@ -186,3 +202,4 @@ void BasicCam::HandleInput()
 
     return;
 }
+

@@ -1,11 +1,12 @@
 
 PROGRAM = a.exe
-CXX = clang++
+CXX = g++
 
-CFLAGS += -I include/ -g -Wall -Wextra -Wpedantic
-CFLAGS += -std=c++17 --target=x86_64-pc-windows-gnu
-LDFLAGS = -L lib/ -lraylib -lraylibdll -lopengl32 -lgdi32 -lwinmm -lws2_32 -static -I include/
-
+CFLAGS = -I include/
+CFLAGS += -g -Wall -Wextra -Wpedantic
+CFLAGS += -std=c++17 
+#--target=x86_64-pc-windows-gnu
+LDFLAGS = -L lib/ -lraylib -lraylibdll -lopengl32 -lgdi32 -lwinmm -lws2_32 -static 
 
 !CXX = |> $(CXX) -c -o %o %f $(CFLAGS) |>
 !LD = |> $(CXX) -o %o %f $(LDFLAGS) |>
