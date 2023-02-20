@@ -27,7 +27,6 @@ int main()
     }
 
     BasicCam cam(3, 3, 90);
-
     while (!WindowShouldClose())
     {
 

@@ -18,6 +18,7 @@ public:
     Block(float x, float z);
     ~Block();
 
+
     void SortCorners();
     void GetVisible();
 

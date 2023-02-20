@@ -62,7 +62,7 @@ void BasicCam::OccludeCorners(std::vector<Block>& blocks)
 {
     SelectionSort(blocks);
 
-    for (size_t i = 1; i < blocks.size(); i++)
+    for (size_t i = 0; i < blocks.size(); i++)
     {
         blocks[i].GetVisible();
     }
@@ -79,13 +79,12 @@ void BasicCam::GenerateLineBuffer(std::vector<Block>& blocks)
         int visibleCornerCount = 3;
         for (size_t j = 0; j < 3; j++)
         {
-            
             if (blocks[i].VisibleCorners[j] ==  &blocks[i].MappedCorners[0] && j == 1)
             {
                 visibleCornerCount -= 1;
                 continue;
             }
-            
+
             float height = _depthEffect / blocks[i].VisibleCorners[j]->Distance;
             float offset = blocks[i].VisibleCorners[j]->XOffset;
             if (offset > HMid)

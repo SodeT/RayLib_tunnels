@@ -25,6 +25,7 @@ Block::Block(float x, float z)
 
 	Corners[3].Position.x = x * Scale + Scale;
 	Corners[3].Position.y = z * Scale + Scale;
+
 	return;
 }
 
