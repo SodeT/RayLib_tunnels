@@ -67,6 +67,8 @@ void BasicCam::OccludeCorners(std::vector<Block>& blocks)
         blocks[i].GetVisible();
     }
 
+
+
     return;
 }
 

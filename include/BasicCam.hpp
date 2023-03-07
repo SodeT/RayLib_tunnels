@@ -17,6 +17,8 @@ class BasicCam
     Vector2 _velocity = {0, 0};
     float _friction = 0.9;
 
+    std::vector<ViewportSpan> _occluded;
+
 public:
     Vector2 Position;
     float Fov;

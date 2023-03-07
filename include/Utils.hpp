@@ -13,8 +13,8 @@ class Block;
 const Color bg = {0, 0, 0, 255};
 const Color fg = {255, 255, 255, 255};
 
-const int Width = 640;
-const int Height = 340;
+const int Width = 128;
+const int Height = 64;
 const int HMid = Width / 2;
 const int VMid = Height / 2;
 const int Scale = 10;
@@ -45,7 +45,7 @@ struct Line
 
 struct MappedCorner
 {
-    float XOffset;
+    int XOffset;
     float Distance;
 };
 
@@ -56,13 +56,13 @@ struct Corner
     float Distance;
 };
 
-/*
+
 struct ViewportSpan
 {
-    float From;
-    float To;
+    int From;
+    int To;
 };
-*/
+
 
 struct Packet
 {
